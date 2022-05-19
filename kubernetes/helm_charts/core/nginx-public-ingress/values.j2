@@ -3658,15 +3658,6 @@ proxyconfig: |-
     }
 
   server {
-    if ($host = org-aastrika-stage.tarento.com) {
-        return 301 https://$host$request_uri;
-        }
-
-      listen       80;
-      server_name  org-aastrika-stage.tarento.com;
-      return 404;
-    }
-  server {
     if ($host = aastrika-metabase.tarento.com) {
         return 301 https://$host$request_uri;
         }
@@ -3722,6 +3713,16 @@ proxyconfig: |-
     {{ proxy_custom_config }}
 
     client_max_body_size 400M;
+    }
+    
+  server {
+    if ($host = org-aastrika-stage.tarento.com) {
+        return 301 https://$host$request_uri;
+        }
+
+      listen       80;
+      server_name  org-aastrika-stage.tarento.com;
+      return 404;
     }
     
   server {
