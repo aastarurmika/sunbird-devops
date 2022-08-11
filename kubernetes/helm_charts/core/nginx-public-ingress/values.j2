@@ -268,13 +268,6 @@ proxyconfig: |-
       proxy_pass http://kong;
     }
     
-    location ~ \.css {
-        add_header  Content-Type    text/css;
-    }
-    location ~ \.js {
-       add_header  Content-Type    application/x-javascript;
-    }
-    
     # This is Caching mechanism for Content search
     location ~ /api/content/v1/search {
       # Enabling caching
