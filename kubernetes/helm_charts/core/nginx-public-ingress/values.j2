@@ -458,17 +458,33 @@ proxyconfig: |-
     }
     
     location /airbyteadmin/ {
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header Host $http_host;
-      proxy_set_header X-NginX-Proxy true;
-      proxy_redirect off;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      set $target http://10.1.1.85:8000;
-      proxy_pass $target;
+        proxy_pass         http://10.1.1.85:8000/;
+        proxy_pass_header Accept;
+        proxy_pass_header Server;
+        proxy_pass_header Authorization;
+        proxy_http_version 1.1;        
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection "upgrade";
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-User $http_authorization;
+        proxy_set_header   Authorization   $http_authorization;
+        proxy_set_header   ns_server-ui yes;
+        proxy_set_header   X-Forwarded-Proto   $scheme;
+        proxy_set_header    X-Forwarded-Server      $host;
+        proxy_set_header   X-Forwarded-Host   $host:$server_port;
+        proxy_hide_header   Referer;
+        proxy_hide_header   Origin;
+        proxy_set_header    Referer           '';
+        proxy_set_header    Origin            '';
+        proxy_cache_bypass $http_upgrade;
+        proxy_connect_timeout   1200;
+        proxy_send_timeout   1200;
+        proxy_read_timeout   1200;
+        fastcgi_send_timeout   1200;
+        fastcgi_read_timeout   1200;
+        send_timeout   1800;   
     }
     
     location /dashboard/ {
