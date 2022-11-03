@@ -267,6 +267,7 @@ proxyconfig: |-
       proxy_http_version 1.1;
       proxy_pass http://kong;
     }
+    
     # This is Caching mechanism for Content search
     location ~ /api/content/v1/search {
       # Enabling caching
@@ -435,6 +436,20 @@ proxyconfig: |-
       set $target http://{{ nodebbvmip }}:4567;
       proxy_pass $target;
     }
+ 
+    location /airbyteadmin/ {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_redirect off;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      set $target http://10.1.2.120:8000;
+      proxy_pass $target;
+    }
     # Oauth2 config
     location /oauth2/ {
       set $target http://oauth2-proxy.logging.svc.cluster.local;
@@ -456,37 +471,6 @@ proxyconfig: |-
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass $target;
     }
-    
-    location /airbyteadmin/ {
-        proxy_pass         http://10.1.1.85:8000/;
-        proxy_pass_header Accept;
-        proxy_pass_header Server;
-        proxy_pass_header Authorization;
-        proxy_http_version 1.1;        
-        proxy_set_header   Upgrade $http_upgrade;
-        proxy_set_header   Connection "upgrade";
-        proxy_set_header   Host $host;
-        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
-        proxy_set_header   X-Real-IP $remote_addr;
-        proxy_set_header   X-Forwarded-User $http_authorization;
-        proxy_set_header   Authorization   $http_authorization;
-        proxy_set_header   ns_server-ui yes;
-        proxy_set_header   X-Forwarded-Proto   $scheme;
-        proxy_set_header    X-Forwarded-Server      $host;
-        proxy_set_header   X-Forwarded-Host   $host:$server_port;
-        proxy_hide_header   Referer;
-        proxy_hide_header   Origin;
-        proxy_set_header    Referer           '';
-        proxy_set_header    Origin            '';
-        proxy_cache_bypass $http_upgrade;
-        proxy_connect_timeout   1200;
-        proxy_send_timeout   1200;
-        proxy_read_timeout   1200;
-        fastcgi_send_timeout   1200;
-        fastcgi_read_timeout   1200;
-        send_timeout   1800;   
-    }
-    
     location /dashboard/ {
       auth_request /oauth2/auth;
       error_page 401 = /oauth2/sign_in;
@@ -916,11 +900,6 @@ proxyconfig: |-
       proxy_pass http://ui-static;
     }
     location / {
-              add_header Access-Control-Allow-Origin "*" ;
-              add_header Access-Control-Allow-Methods "GET, OPTIONS, PATCH, POST";
-              add_header Access-Control-Allow-Headers "Access-Control-Allow-Origin, Authorization, Content-Type, user-id, Content-Encoding, rootorg, org, wid, hostpath";
-
-              
       rewrite ^/(.*) /$1 break;
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP {{ nginx_client_public_ip_header | d('$remote_addr') }};
@@ -1913,12 +1892,12 @@ proxyconfig: |-
     }
 
    server {
-    if ($host = cbp-sphere.aastrika.org) {
+    if ($host = cbp-aastrika-dev.tarento.com) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  cbp-{{ proxy_server_name }};
+      server_name  cbp-aastrika-dev.tarento.com;
       return 404;
     }
    server {
@@ -1927,7 +1906,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.cbp-sphere.aastrika.org cbp-sphere.aastrika.org;
+    server_name *.cbp-aastrika-dev.tarento.com cbp-aastrika-dev.tarento.com;
     {#
     custom nginx server config section
     eg:
@@ -1948,13 +1927,13 @@ proxyconfig: |-
     ignore_invalid_headers off;  #pass through headers from Jenkins which are considered invalid by Nginx server.
     resolver {{ kube_dns_ip }} valid=30s;
     location ~* ^/auth/(.*)/impersonation {
-      return 301 {{proto}}://cbp-{{ proxy_server_name }};
+      return 301 {{proto}}://cbp.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/master {
-      return 301 {{proto}}://cbp-{{ proxy_server_name }};
+      return 301 {{proto}}://cbp.{{ proxy_server_name }};
     }
     location ~* ^/auth/admin/master/console/ {
-      return 301 {{proto}}://cbp-{{ proxy_server_name }};
+      return 301 {{proto}}://cbp.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/(.+)/token/introspect/ {
           return 301 {{proto}}://$host/api/auth/v1/realms/$1/token/introspect;
@@ -2804,12 +2783,12 @@ proxyconfig: |-
 
 
    server {
-    if ($host = admin-sphere.aastrika.org) {
+    if ($host = admin-aastrika-dev.tarento.com) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  admin-{{ proxy_server_name }};
+      server_name  admin-aastrika-dev.tarento.com;
       return 404;
     }
    server {
@@ -2818,7 +2797,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.admin-sphere.aastrika.org admin-sphere.aastrika.org;
+    server_name *.admin-aastrika-dev.tarento.com admin-aastrika-dev.tarento.com;
     {#
     custom nginx server config section
     eg:
@@ -2839,13 +2818,13 @@ proxyconfig: |-
     ignore_invalid_headers off;  #pass through headers from Jenkins which are considered invalid by Nginx server.
     resolver {{ kube_dns_ip }} valid=30s;
     location ~* ^/auth/(.*)/impersonation {
-      return 301 {{proto}}://admin-{{ proxy_server_name }};
+      return 301 {{proto}}://spv.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/master {
-      return 301 {{proto}}://admin-{{ proxy_server_name }};
+      return 301 {{proto}}://spv.{{ proxy_server_name }};
     }
     location ~* ^/auth/admin/master/console/ {
-      return 301 {{proto}}://admin-{{ proxy_server_name }};
+      return 301 {{proto}}://spv.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/(.+)/token/introspect/ {
           return 301 {{proto}}://$host/api/auth/v1/realms/$1/token/introspect;
@@ -2866,7 +2845,7 @@ proxyconfig: |-
       return 301 {{proto}}://$host/api/auth/v1/realms/$1/clients-registrations/;
     }
     location ~* ^/auth/admin/master/console/ {
-      return 301 {{proto}}://admin-{{ proxy_server_name }};
+      return 301 {{proto}}://spv.{{ proxy_server_name }};
     }
     location ~* ^/auth/v1/refresh/token  {
       rewrite ^/auth/(.*) /auth/$1 break;
@@ -3694,12 +3673,12 @@ proxyconfig: |-
     }
 
   server {
-    if ($host = dashboard.aastrika.org) {
+    if ($host = aastrika-metabase-dev.tarento.com) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  dashboard.aastrika.org;
+      server_name  aastrika-metabase.tarento.com;
       return 404;
     }
 
@@ -3709,7 +3688,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.dashboard.aastrika.org dashboard.aastrika.org;
+    server_name *.aastrika-metabase.tarento.com aastrika-metabase.tarento.com;
     {#
     custom nginx server config section
     eg:
@@ -3730,7 +3709,20 @@ proxyconfig: |-
     ignore_invalid_headers off;  #pass through headers from Jenkins which are considered invalid by Nginx server.
     resolver {{ kube_dns_ip }} valid=30s;
 
-
+    location / {
+      rewrite ^/(.*) /$1 break;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP {{ nginx_client_public_ip_header | d('$remote_addr') }};
+      proxy_set_header X-Scheme $scheme;
+      proxy_connect_timeout 5;
+      proxy_send_timeout 60;
+      proxy_read_timeout 70;
+      proxy_set_header    X-Forwarded-Proto $scheme;
+      proxy_set_header Connection "";
+      proxy_http_version 1.1;
+      proxy_set_header X-Request-ID $sb_request_id;
+      proxy_pass http://metabase-service:3000;
+    }
 
     {# Including custom configuration #}
     {{ proxy_custom_config }}
@@ -3739,22 +3731,22 @@ proxyconfig: |-
     }
     
   server {
-    if ($host = org-sphere.aastrika.org) {
+    if ($host = org-aastrika-dev.tarento.com) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  org-{{ proxy_server_name }};
+      server_name  org-aastrika-dev.tarento.com;
       return 404;
     }
-
+    
   server {
     listen                443 ssl;
     ssl_certificate       /etc/secrets/site.crt;
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.org-sphere.aastrika.org org-sphere.aastrika.org;
+    server_name *.org-aastrika-dev.tarento.com org-aastrika-dev.tarento.com;
     {#
     custom nginx server config section
     eg:
@@ -3775,13 +3767,13 @@ proxyconfig: |-
     ignore_invalid_headers off;  #pass through headers from Jenkins which are considered invalid by Nginx server.
     resolver {{ kube_dns_ip }} valid=30s;
     location ~* ^/auth/(.*)/impersonation {
-      return 301 {{proto}}:/org-{{ proxy_server_name }};
+      return 301 {{proto}}://mdo.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/master {
-      return 301 {{proto}}://org-{{ proxy_server_name }};
+      return 301 {{proto}}://mdo.{{ proxy_server_name }};
     }
     location ~* ^/auth/admin/master/console/ {
-      return 301 {{proto}}://org-{{ proxy_server_name }};
+      return 301 {{proto}}://mdo.{{ proxy_server_name }};
     }
     location ~* ^/auth/realms/(.+)/token/introspect/ {
           return 301 {{proto}}://$host/api/auth/v1/realms/$1/token/introspect;
@@ -4628,7 +4620,7 @@ proxyconfig: |-
     client_max_body_size 400M;
 
     }
- 
+    
 nginxconfig: |
   user  nginx;
   worker_processes  {{nginx_worker_processes | d("auto")}};
