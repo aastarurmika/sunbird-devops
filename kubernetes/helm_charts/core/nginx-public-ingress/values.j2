@@ -115,7 +115,7 @@ proxyconfig: |-
   {% endif  %}
     server_name *.{{ proxy_server_name }} {{ proxy_server_name }};
     # This header will prevent search engines from indexing your https pages
-    add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+   # add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
     {#
     custom nginx server config section
     eg:
@@ -139,6 +139,7 @@ proxyconfig: |-
     location ~* ^/auth/(.*)/impersonation {
       return 301 {{proto}}://{{ proxy_server_name }};
     }
+    
     location ~* ^/auth/realms/master {
       return 301 {{proto}}://{{ proxy_server_name }};
     }
@@ -241,6 +242,11 @@ proxyconfig: |-
       proxy_http_version 1.1;
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://ui-static;
+    }
+    location = /robots.txt {
+    if ($scheme = https) {
+    rewrite ^ /robots-deny-all.txt permanent;
+    }
     }
     # Caching for content consumption
     location ~ /api/(content/v1/read|course/v1/hierarchy) {
