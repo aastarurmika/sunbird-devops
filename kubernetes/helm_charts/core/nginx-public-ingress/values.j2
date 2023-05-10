@@ -244,9 +244,8 @@ proxyconfig: |-
       proxy_pass http://ui-static;
     }
     location = /robots.txt {
-    if ($scheme = https) {
-    rewrite ^ /robots-deny-all.txt permanent;
-    }
+    add_header Content-Type text/plain;
+    return 200 "User-agent: *\nDisallow: /";
     }
     # Caching for content consumption
     location ~ /api/(content/v1/read|course/v1/hierarchy) {
