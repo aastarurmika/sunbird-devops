@@ -15,7 +15,7 @@ echo -e "\n\e[0;32m${bold}Installating Jenkins${normal}"
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
 apt-add-repository "deb https://pkg.jenkins.io/debian-stable binary/"
 apt-get update
-apt-get install -y jenkins=2.277.4
+apt-get install -y jenkins=2.319.3
 
 echo -e "\n\e[0;32m${bold}Installating PIP${normal}"
 apt-get install -y python-pip
@@ -89,6 +89,7 @@ apt update
 wget https://aka.ms/downloadazcopy-v10-linux
 tar -xf downloadazcopy-v10-linux
 cp ./azcopy_linux_amd64_*/azcopy /usr/bin/
+chmod +x /usr/bin/azcopy
 rm -rf downloadazcopy-v10-linux* azcopy_linux_amd*
 ###
 
@@ -125,13 +126,11 @@ rm -rf /usr/local/bin/helm
 cp linux-386/helm /usr/local/bin/helm
 rm -rf helm-v* linux-amd*
 
-# Install kubectl
+# Install kubectl v1.22.0
 echo -e "\n\e[0;32m${bold}Installating kubectl${normal}"
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-touch /etc/apt/sources.list.d/kubernetes.list
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-apt-get update
-apt-get install -y kubectl
+curl -LO https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl
+chmod +x kubectl
+mv kubectl /usr/local/bin
 
 #Install yarn
 echo -e "\n\e[0;32m${bold}Installating yarn${normal}"
@@ -146,6 +145,13 @@ tar -xf openjdk-11+28_linux-x64_bin.tar.gz
 mv jdk-11 java-11-openjdk-amd64
 cp -r java-11-openjdk-amd64 /usr/lib/jvm/
 rm -rf java-11-openjdk-amd64 openjdk-11+28_linux-x64_bin.tar.gz
+
+#Install openjdk-11.0.2 # needed for DP jobs
+echo -e "\n\e[0;32m${bold}Installating openjdk 11.0.2${normal}"
+wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+tar -xf openjdk-11.0.2_linux-x64_bin.tar.gz
+mv jdk-11.0.2 /usr/lib/jvm/
+rm openjdk-11.0.2_linux-x64_bin.tar.gz
 
 #Install maven 3.6.3
 echo -e "\n\e[0;32m${bold}Installating maven 3.6.3${normal}"
@@ -162,6 +168,44 @@ apt install -y python-psycopg2
 #Install libpng-dev - Ubuntu 18 and above fix for plugin builds
 echo -e "\n\e[0;32m${bold}Installating libpng-dev${normal}"
 apt install -y libpng-dev
+
+echo -e "\n\e[0;32m${bold}Installating OPA${normal}"
+curl -k -L -o opa https://openpolicyagent.org/downloads/v0.34.2/opa_linux_amd64_static
+chmod 755 ./opa
+mv opa /usr/local/bin/
+
+echo -e "\n\e[0;32m${bold}Installing mongo tools${normal}"
+apt install -y mongo-tools
+
+echo -e "\n\e[0;32m${bold}Installing required python2 pacakges if distro is ubuntu 18 and above${normal}"
+# For kong api and consumer onboarding
+osrelease=$(cat /etc/lsb-release | grep DISTRIB_RELEASE | awk -F '=' '{print $2}')
+if [[ $osrelease > 18 ]]
+then
+  wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  which pip
+  rc=$?
+  if [[ $rc == 0 ]]
+  then
+    cp /usr/local/bin/pip /usr/local/bin/pip3
+  fi
+  which python2.7
+  rc=$?
+  if [[ $rc == 0 ]]
+  then
+    python2.7 get-pip.py
+    pip install retry
+    pip install PyJWT
+    apt reinstall -y python3-pip
+  else
+    apt reinstall -y python2
+    python2.7 get-pip.py
+    python2.7 get-pip.py
+    pip install PyJWT
+    apt reinstall -y python3-pip
+  fi
+fi
+rm -rf get-pip.py
 
 echo -e "\n\e[0;32m${bold}Clean up${normal}"
 sudo apt -y autoremove

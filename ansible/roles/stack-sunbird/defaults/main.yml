@@ -10,7 +10,7 @@ sunbird_keycloak_clientId:
 sunbird_keycloak_public:
 sunbird_cache_store:
 sunbird_cache_ttl: 1800
-sunbird_es_port: 9300 # If this port is same for all the machines, single vaule is enough! else comma seperated values
+sunbird_es_port: 9300 # If this port is same for all the machines, single value is enough! else comma separated values
 sunbird_es_http_port: 9200
 actor_replicas: 1
 actor_reservation_memory: 768M
@@ -78,12 +78,11 @@ sunbird_portal_cdn_url:
 sunbird_dataservice_url:
 sunbird_background_actor_port:
 sunbird_app_url:
-sunbird_image_storage_url:
 sunbird_telemetry_dispatchers: kafka
 content_service_whitelisted_channels:
 content_service_blacklisted_channels:
 sunbird_env_logo_url:
-desktop_app_storage_url: "https://{{sunbird_public_storage_account_name}}.blob.core.windows.net/{{offline_installer_container_name}}"
+desktop_app_storage_url: "{{ sunbird_offline_azure_storage_account_url }}"
 
 telemetry_logstash_heap_size: 512m
 telemetry_logstash_replicas: 1
@@ -212,9 +211,6 @@ prometheus_alertmanager_route_prefix: alertmanager
 ekstep_s3_env: "{{sunbird_env}}"
 registry_url: "{{proto}}://{{proxy_server_name}}/registry"
 
-upstream_url: "ekstep-public-{{ekstep_s3_env}}.s3-ap-south-1.amazonaws.com"
-plugin_upstream_url: "ekstep-public-{{ekstep_s3_env}}.s3-ap-south-1.amazonaws.com"
-sunbird_offline_azure_storage_account_url: "{{ sunbird_public_storage_account_name }}.blob.core.windows.net/{{ offline_installer_container_name }}"
 # Override this dictionary in your common.yaml
 proxy:
   # repository:  'proxy'
@@ -304,7 +300,6 @@ ml_survey_liveness_readiness:
     periodSeconds: 30
     timeoutSeconds: 10
     failureThreshold: 5
-    successThreshold: 2
   livenessProbe:
     httpGet:
       path: /healthCheckStatus
@@ -324,7 +319,6 @@ ml_core_liveness_readiness:
     periodSeconds: 30
     timeoutSeconds: 10
     failureThreshold: 5
-    successThreshold: 2
   livenessProbe:
     httpGet:
       path: /healthCheckStatus
@@ -344,7 +338,6 @@ ml_reports_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 5
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /healthCheckStatus
@@ -364,7 +357,6 @@ ml_projects_liveness_readiness:
     periodSeconds: 30
     timeoutSeconds: 10
     failureThreshold: 5
-    successThreshold: 2
   livenessProbe:
     httpGet:
       path: /healthCheckStatus
@@ -384,7 +376,6 @@ dial_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -404,7 +395,6 @@ groups_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -424,7 +414,6 @@ lms_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -444,7 +433,6 @@ apimanager_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /status
@@ -464,7 +452,6 @@ assessment_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -484,7 +471,6 @@ cert_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -504,7 +490,6 @@ certregistry_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -524,7 +509,6 @@ content_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -544,7 +528,6 @@ enc_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -564,7 +547,6 @@ knowledgemw_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -584,7 +566,6 @@ learner_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -598,16 +579,15 @@ notification_liveness_readiness:
   healthcheck: true
   readinessProbe:
     httpGet:
-      path: /service/health
+      path: /health
       port: 9000
     initialDelaySeconds: 15
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
-      path: /service/health
+      path: /health
       port: 9000
     initialDelaySeconds: 15
     periodSeconds: 15
@@ -623,8 +603,7 @@ nodebb_liveness_readiness:
     initialDelaySeconds: 45
     periodSeconds: 15
     timeoutSeconds: 5
-    failureThreshold: 2
-    successThreshold: 1
+    failureThreshold: 20
   livenessProbe:
     httpGet:
       path: /discussions/api/category/2
@@ -632,7 +611,7 @@ nodebb_liveness_readiness:
     initialDelaySeconds: 45
     periodSeconds: 15
     timeoutSeconds: 5
-    failureThreshold: 2
+    failureThreshold: 20
 
 player_liveness_readiness:
   healthcheck: true
@@ -644,7 +623,6 @@ player_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -664,7 +642,6 @@ print_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -684,7 +661,6 @@ telemetry_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -703,7 +679,6 @@ userorg_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -723,7 +698,6 @@ discussionsmw_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -743,7 +717,6 @@ search_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -763,7 +736,6 @@ taxonomy_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -777,13 +749,12 @@ report_liveness_readiness:
   healthcheck: false
   readinessProbe:
     httpGet:
-      path: /health
+      path: /service/health
       port: 3030
     initialDelaySeconds: 15
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -803,7 +774,6 @@ analytics_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -823,7 +793,6 @@ dial_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /health
@@ -843,7 +812,6 @@ uci_inbound_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -863,7 +831,6 @@ uci_outbound_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -883,7 +850,6 @@ uci_transformer_liveness_readiness:
       scheme: HTTP
     initialDelaySeconds: 90
     periodSeconds: 30
-    successThreshold: 1
     timeoutSeconds: 5
   readinessProbe:
     failureThreshold: 2
@@ -893,7 +859,6 @@ uci_transformer_liveness_readiness:
       scheme: HTTP
     initialDelaySeconds: 90
     periodSeconds: 30
-    successThreshold: 1
     timeoutSeconds: 5
 
 uci_orchestrator_liveness_readiness:
@@ -902,16 +867,15 @@ uci_orchestrator_liveness_readiness:
     httpGet:
       path: /service/health
       port: 8686
-    initialDelaySeconds: 15
+    initialDelaySeconds: 60
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
       port: 8686
-    initialDelaySeconds: 15
+    initialDelaySeconds: 60
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
@@ -926,7 +890,6 @@ uci_odk_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
@@ -946,12 +909,57 @@ uci_liveness_readiness:
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
-    successThreshold: 1
   livenessProbe:
     httpGet:
       path: /service/health
       port: 9999
     initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+
+opa_liveness_readiness:
+  opa_healthcheck: true
+  opa_readinessProbe:
+    failureThreshold: 2
+    httpGet:
+      path: /health?bundle=true
+      port: 8282
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+  opa_livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /health?plugins
+      port: 8282
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+
+envoy_liveness_readiness:
+  envoy_healthcheck: true
+  envoy_readinessProbe:
+    failureThreshold: 2
+    httpGet:
+      path: /ready
+      port: 10000
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+  envoy_livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /ready
+      port: 10000
+      scheme: HTTP
+    initialDelaySeconds: 5
     periodSeconds: 15
     timeoutSeconds: 5
     failureThreshold: 2
@@ -970,7 +978,7 @@ adminutil_access_values:
   role_to_run:
     - decrypt.yml
     - generate-keys.yml
-    - copy-to-helm-public.yml
+    - copy-to-helm.yml
 
 # analytics-service related vars
 cassandra:
@@ -1002,7 +1010,6 @@ public_exhaust_datasets: ["public-data-exhaust"]
 
 data_exhaust_batch_limit: 20
 
-
 mount_keycloak_key_apps:
   - learner
   - lms
@@ -1016,3 +1023,50 @@ mount_keycloak_key_apps:
 
 #master category validation enabled
 master_category_validation_enabled: "Yes"
+
+opa_policies_path: ../../../opa
+# Cannot remove common.rego from common_opa_policy_files yet
+# Opa issue - https://github.com/open-policy-agent/opa/issues/4335
+common_opa_policy_files:
+  - main.rego
+  - common.rego
+mandate_opa_tests_coverage: true
+
+analytics_opa_enabled: true
+certregistry_opa_enabled: true
+content_opa_enabled: true
+knowledgemw_opa_enabled: true
+learner_opa_enabled: true
+lms_opa_enabled: true
+notification_opa_enabled: true
+report_opa_enabled: true
+
+# Desktop app is not sending x-authenticated-for header due to which managed user flow is breaking
+# This is a temporary fix till the desktop app issue is fixed
+kong_desktop_device_consumer_names_for_opa: '["desktop"]'
+
+# Audience claim check is disabled as of now
+# List of keycloak clients as these can come in audience field of a JWT token
+# keycloak_allowed_aud: '"{{ keycloak_auth_server_url }}/realms/{{ keycloak_realm }}", "account", "realm-management"'
+
+
+cloudstorage_relative_path_prefix_content: "CONTENT_STORAGE_BASE_PATH"
+cloudstorage_relative_path_prefix_dial: "DIAL_STORAGE_BASE_PATH"
+cloudstorage_metadata_list: '["appIcon", "artifactUrl", "posterImage", "previewUrl", "thumbnail", "assetsMap", "certTemplate", "itemSetPreviewUrl", "grayScaleAppIcon", "sourceURL", "variants", "downloadUrl", "streamingUrl", "toc_url", "data", "question", "solutions", "editorState", "media", "pdfUrl", "transcripts"]'
+
+### inQuiry assessment service default values
+inquiry_schema_path: "{{ kp_schema_base_path }}"
+inquiry_kafka_urls: "{{ kafka_urls }}"
+inquiry_assessment_import_kafka_topic_name: "{{ env_name }}.object.import.request"
+inquiry_assessment_publish_kafka_topic_name: "{{ env_name }}.assessment.publish.request"
+inquiry_cassandra_connection: "{{ lp_cassandra_connection }}"
+inquiry_cassandra_keyspace_prefix: "{{ lp_cassandra_keyspace_prefix }}"
+inquiry_redis_host: "{{ sunbird_lp_redis_host }}"
+inquiry_search_service_base_url: "{{ sunbird_search_service_api_base_url }}/v3/search"
+
+### LERN Release-5.0.1
+cloud_store_base_path_placeholder: "CLOUD_BASE_PATH"
+
+#Youtube Standard Licence Validation
+youtube_app_name: fetch-youtube-license
+youtube_api_key: "{{ lp_vault_youtube_api_key }}"
