@@ -85,6 +85,7 @@ content_validation_service_prefix: /contentValidation
 scoring_engine_service_prefix: /scoring
 hub_graph_service_prefix: /connections
 workflow_handler_service_prefix: /workflow
+player_prefix: /player
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
@@ -274,6 +275,24 @@ kong_apis:
       config.limit_by: credential
     - name: request-size-limiting
       config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: playerQuestionList
+    uris: "{{ player_prefix }}/question/v1/list"
+    upstream_url: "{{ sb_cb_ext_service_url }}/v1/quml/question/list"
+    strip_uri: true
+    plugins:
+    - name: jwt
+    - name: cors
+    - "{{ statsd_pulgin }}"
+    - name: acl
+      config.whitelist:
+        - "contentAccess"
+    - name: rate-limiting
+      config.policy: local
+      config.hour: "{{ medium_rate_limit_per_hour }}"
+      config.limit_by: credential
+    - name: request-size-limiting
+      config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
   - name: assemblePage
     uris: "{{ data_service_prefix }}/v1/page/assemble"
@@ -6090,6 +6109,23 @@ kong_apis:
     - name: request-size-limiting
       config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
+  - name: assessmentSubmitV3
+    uris: "/v3/user/assessment/submit"
+    upstream_url: "{{ sb_cb_ext_service_url }}/v3/user/assessment/submit"
+    strip_uri: true
+    plugins:
+    - name: jwt
+    - name: cors
+    - "{{ statsd_pulgin }}"
+    - name: acl
+      config.whitelist:
+        - "dataCreate"
+    - name: rate-limiting
+      config.policy: local
+      config.hour: "{{ medium_rate_limit_per_hour }}"
+      config.limit_by: credential
+    - name: request-size-limiting
+      config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
   - name: getTopPerformersForCourse
     uris: "/v2/resources/user/cohorts/top-performers"
