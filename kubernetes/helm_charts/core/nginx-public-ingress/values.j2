@@ -4402,11 +4402,15 @@ proxyconfig: |-
       proxy_pass http://ui-cbp-igot;
     }
    location ~* ^/well-known/(.*) {
+          # Enabling cache for Response code 200
+          expires 1M;
+          add_header Pragma public;
+          add_header Cache-Control "public";
           # Enabling compression
           gzip            on;
           gzip_min_length 100000;
           gzip_proxied    expired no-cache no-store private auth;
-          gzip_types application/javascript application/x-javascript text/css text/javascript;
+          gzip_types application/javascript application/x-javascript text/javascript;
           if ($request_method = OPTIONS ) {
                   add_header Access-Control-Allow-Origin "*" ;
                   add_header Access-Control-Allow-Methods "GET, OPTIONS, PATCH, POST";
@@ -4416,10 +4420,10 @@ proxyconfig: |-
                   add_header Content-Type text/plain;
                   return 200;
           }
-      set $s3_bucket        "{{plugin_upstream_url}}";
+      set $bucket        "{{s3_upstream_url}}";
       set $url_full         '$1';
       proxy_http_version     1.1;
-      proxy_set_header       Host "{{plugin_upstream_url.split('/')[0]|lower}}";
+      proxy_set_header       Host "{{s3_upstream_url.split('/')[0]|lower}}";
       proxy_set_header       Authorization '';
       proxy_hide_header      Access-Control-Allow-Origin;
       proxy_hide_header      Access-Control-Allow-Methods;
@@ -4429,10 +4433,10 @@ proxyconfig: |-
       proxy_ignore_headers   "Set-Cookie";
       proxy_buffering        off;
       proxy_intercept_errors on;
-      add_header             Access-Control-Allow-Origin "*" ;
-      add_header             Access-Control-Allow-Methods GET;
+          add_header             Access-Control-Allow-Origin "*";
+          add_header             Access-Control-Allow-Methods GET;
       proxy_set_header X-Request-ID $sb_request_id;
-      proxy_pass             https://$s3_bucket/v3/preview/$url_full;
+      proxy_pass             https://$bucket/$url_full;
   }
   location ~* ^/desktop/(.*) {
           # Enabling cache for Response code 200
