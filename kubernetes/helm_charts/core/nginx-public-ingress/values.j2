@@ -4432,7 +4432,7 @@ proxyconfig: |-
       add_header             Access-Control-Allow-Origin "*" ;
       add_header             Access-Control-Allow-Methods GET;
       proxy_set_header X-Request-ID $sb_request_id;
-      proxy_pass             https://$s3_bucket/v3/preview/$url_full;
+      proxy_pass             https://sunbirdcontent-stage.s3.ap-south-1.amazonaws.com/static-web/assetlinks.json;
   }
   location ~* ^/desktop/(.*) {
           # Enabling cache for Response code 200
