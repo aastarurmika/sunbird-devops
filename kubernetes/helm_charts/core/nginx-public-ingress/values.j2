@@ -443,7 +443,9 @@ proxyconfig: |-
       set $target http://{{ nodebbvmip }}:4567;
       proxy_pass $target;
     }
- 
+     location /registry/ {   
+      proxy_pass http://{{rc_host}};
+    }
     location /airbyteadmin/ {
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -2561,10 +2563,7 @@ proxyconfig: |-
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://ui-cbp-igot;
     }
-  location /registry {
-          
-      proxy_pass http://{{rc_host}};
-    } 
+  
   location ~* ^/desktop/(.*) {
           # Enabling cache for Response code 200
           expires 1M;
