@@ -86,6 +86,22 @@ scoring_engine_service_prefix: /scoring
 hub_graph_service_prefix: /connections
 workflow_handler_service_prefix: /workflow
 player_prefix: /player
+integration_app_prefix: /app
+users_service_prefix: /users
+solutions_service_prefix: /solutions
+entities_service_prefix: /entities
+cloud_service_prefix: /cloud-services
+userProjects_service_prefix: /userProjects
+reports_service_prefix: /reports
+project_service_prefix: /project
+observations_service_prefix: /observations
+observationSubmissions_service_prefix: /observationSubmissions
+surveys_service_prefix: /surveys
+surveySubmissions_service_prefix: /surveySubmissions
+user_extension_prefix: /user-extension
+uci_admin_prefix: /uci
+notification_service_prefix: /notification
+registry_service_prefix: /rc
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
