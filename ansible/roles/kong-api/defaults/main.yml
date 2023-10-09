@@ -4353,7 +4353,7 @@ kong_apis:
 
   - name: userBulkUpload
     uris: "{{ user_service_prefix }}/v1/upload"
-    upstream_url: "{{ learning_service_url }}/v1/user/upload"
+    upstream_url: "{{ sb_cb_ext_service_url }}/v1/user/upload"
     strip_uri: true
     plugins:
       - name: jwt
