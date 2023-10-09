@@ -4352,7 +4352,7 @@ kong_apis:
         config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
   - name: userBulkUpload
-    uris: "{{ user_service_prefix }}/v1/upload"
+    uris: "{{ user_service_prefix }}/v1/bulkupload"
     upstream_url: "{{ sb_cb_ext_service_url }}/user/v1/bulkupload"
     strip_uri: true
     plugins:
