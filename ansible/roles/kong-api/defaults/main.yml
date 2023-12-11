@@ -180,8 +180,8 @@ kong_apis:
         config.allowed_payload_size: "{{ small_request_size_limit }}"
 
   - name: getSurveyDetails
-    uris: "{{ observation_mw_service_prefix }}/v1/survey/verifySurveyLink"
-    upstream_url: "{{ observation_mw_url }}/v1/survey/verifySurveyLink"
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/getSurveyDetails"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/getSurveyDetails"
     strip_uri: true
     plugins:
       - name: jwt
