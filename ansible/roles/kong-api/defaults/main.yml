@@ -161,6 +161,42 @@ premium_consumer_rate_limits:
     config.policy: local
 
 kong_apis:
+  - name: verifySurveyLink
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/verifySurveyLink"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/verifySurveyLink"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getSurveyDetails
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/verifySurveyLink"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/verifySurveyLink"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
   - name: getAllMenteeForMentor
     uris: "{{ observation_mw_service_prefix }}/v1/mentor/getAllMenteeForMentor"
     upstream_url: "{{ observation_mw_url }}/v1/mentor/getAllMenteeForMentor"
