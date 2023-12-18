@@ -162,8 +162,8 @@ premium_consumer_rate_limits:
 
 kong_apis:
   - name: observationOtpVerification
-    uris: "{{ observation_mw_service_prefix }}/v1/observation/observationOtpVerificaion"
-    upstream_url: "{{ observation_mw_url }}/v1/observation/observationOtpVerificaion"
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/observationOtpVerification"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/observationOtpVerification"
     strip_uri: true
     plugins:
       - name: jwt
