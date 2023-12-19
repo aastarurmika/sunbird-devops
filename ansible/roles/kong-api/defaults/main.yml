@@ -161,6 +161,61 @@ premium_consumer_rate_limits:
     config.policy: local
 
 kong_apis:
+ 
+  - name: getObservationDetails
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/getobservationDetails"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/getobservationDetails"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}" 
+
+  - name: addEntityToObservation
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/addEntityToObservation"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/addEntityToObservation"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: observationLinkVerify
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/verifyobservationLink"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/verifyobservationLink"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
   - name: observationOtpVerification
     uris: "{{ observation_mw_service_prefix }}/v1/observation/observationOtpVerification"
     upstream_url: "{{ observation_mw_url }}/v1/observation/observationOtpVerification"
