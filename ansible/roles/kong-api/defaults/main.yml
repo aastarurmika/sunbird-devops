@@ -86,6 +86,7 @@ scoring_engine_service_prefix: /scoring
 hub_graph_service_prefix: /connections
 workflow_handler_service_prefix: /workflow
 player_prefix: /player
+observation_mw_service_prefix: /observationmw
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
@@ -114,6 +115,7 @@ workflow_handler_service_url: "http://workflow-handler-service:5099"
 discussions_mw_url: "http://discussionsmw-service:3002"
 nodebb_url: "http://nodebb-service:4567/discussions"
 analytics_url: "http://pm-analytics-service:8091"
+observation_mw_url: "http://observation-mw:3009"
 
 premium_consumer_rate_limits:
   - api: createContent
@@ -130,6 +132,312 @@ premium_consumer_rate_limits:
     config.policy: local
 
 kong_apis:
+  - name: mentorObservationFilteredCount
+    uris: "{{ observation_mw_service_prefix }}/v1/mentor/mentorObservationFilteredCount"
+    upstream_url: "{{ observation_mw_url }}/v1/mentor/mentorObservationFilteredCount"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getMentorMenteeDetailsFiltered
+    uris: "{{ observation_mw_service_prefix }}/v1/mentor/getMentorMenteeDetailsFiltered"
+    upstream_url: "{{ observation_mw_url }}/v1/mentor/getMentorMenteeDetailsFiltered"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: updateSubmissionandCompetency
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/updateSubmissionandCompetency"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/updateSubmissionandCompetency"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getObservationSubmissionResult
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/getObservationSubmissionResult"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/getObservationSubmissionResult"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: submitObservation
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/submitObservation"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/submitObservation"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getObservationDetails
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/getobservationDetails"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/getobservationDetails"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: addEntityToObservation
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/addEntityToObservation"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/addEntityToObservation"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: observationLinkVerify
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/verifyobservationLink"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/verifyobservationLink"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: observationOtpVerification
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/observationOtpVerification"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/observationOtpVerification"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: verifySurveyLink
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/verifySurveyLink"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/verifySurveyLink"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: surveyOtpVerification
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/surveyOtpVerification"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/surveyOtpVerification"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getSurveyDetails
+    uris: "{{ observation_mw_service_prefix }}/v1/survey/getSurveyDetails"
+    upstream_url: "{{ observation_mw_url }}/v1/survey/getSurveyDetails"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getAllMenteeForMentor
+    uris: "{{ observation_mw_service_prefix }}/v1/mentor/getAllMenteeForMentor"
+    upstream_url: "{{ observation_mw_url }}/v1/mentor/getAllMenteeForMentor"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: getObservationForMentee
+    uris: "{{ observation_mw_service_prefix }}/v1/mentor/getObservationForMentee"
+    upstream_url: "{{ observation_mw_url }}/v1/mentor/getObservationForMentee"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: menteeVerificationSendOtp
+    uris: "{{ observation_mw_service_prefix }}/v1/otp/sendOtp"
+    upstream_url: "{{ observation_mw_url }}/v1/otp/sendOtp"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: menteeVerificationVerifyOtp
+    uris: "{{ observation_mw_service_prefix }}/v1/otp/verifyOtp"
+    upstream_url: "{{ observation_mw_url }}/v1/otp/verifyOtp"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: menteeVerificationResendOtp
+    uris: "{{ observation_mw_service_prefix }}/v1/otp/retry"
+    upstream_url: "{{ observation_mw_url }}/v1/otp/retry"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "userAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
   - name: acceptContentFlag
     uris: "{{ content_prefix }}/v1/flag/accept"
     upstream_url: "{{ knowledge_mw_service_url }}/v1/content/flag/accept"
