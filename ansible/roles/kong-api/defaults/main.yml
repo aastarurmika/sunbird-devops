@@ -161,8 +161,7 @@ premium_consumer_rate_limits:
     config.policy: local
 
 kong_apis:
- 
--   name: menteeConsolidatedObservationAttempts
+  - name: menteeConsolidatedObservationAttempts
     uris: "{{ observation_mw_service_prefix }}/v1/mentor/menteeConsolidatedObservationAttempts"
     upstream_url: "{{ observation_mw_url }}/v1/mentor/menteeConsolidatedObservationAttempts"
     strip_uri: true
