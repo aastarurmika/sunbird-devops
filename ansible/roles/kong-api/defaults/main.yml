@@ -162,8 +162,8 @@ premium_consumer_rate_limits:
 
 kong_apis:
   - name: menteeConsolidatedObservationAttempts
-    uris: "{{ observation_mw_service_prefix }}/v1/mentor/menteeConsolidatedObservationAttempts"
-    upstream_url: "{{ observation_mw_url }}/v1/mentor/menteeConsolidatedObservationAttempts"
+    uris: "{{ observation_mw_service_prefix }}/v1/observation/menteeConsolidatedObservationAttempts"
+    upstream_url: "{{ observation_mw_url }}/v1/observation/menteeConsolidatedObservationAttempts"
     strip_uri: true
     plugins:
       - name: jwt
