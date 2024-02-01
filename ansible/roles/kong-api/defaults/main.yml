@@ -6856,6 +6856,78 @@ kong_apis:
       - name: request-size-limiting
         config.allowed_payload_size: "{{ small_request_size_limit }}"
 
+  - name: createComments
+    uris: "{{ scoring_engine_service_prefix }}/api/comments/create"
+    upstream_url: "{{ scoring_engine_service_url }}/api/comments/create"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "dataCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: getCommentsByCourse
+    uris: "{{ scoring_engine_service_prefix }}/api/comments/course"
+    upstream_url: "{{ scoring_engine_service_url }}/api/comments/course"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "dataCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: updateComment
+    uris: "{{ scoring_engine_service_prefix }}/api/comments/update"
+    upstream_url: "{{ scoring_engine_service_url }}/api/comments/update"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "dataCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: getAllComments
+    uris: "{{ scoring_engine_service_prefix }}/api/comments/getall"
+    upstream_url: "{{ scoring_engine_service_url }}/api/comments/getall"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "dataCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
   - name: calculateScore
     uris: "{{ scoring_engine_service_prefix }}/v1/add"
     upstream_url: "{{ scoring_engine_service_url }}/v1/add"
