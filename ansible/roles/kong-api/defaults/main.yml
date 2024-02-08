@@ -80,7 +80,6 @@ collection_prefix: /collection
 question_prefix: /question
 questionset_prefix: /questionset
 event_prefix: /event
-notification_service_prefix: /notification
 content_validation_service_prefix: /contentValidation
 scoring_engine_service_prefix: /scoring
 hub_graph_service_prefix: /connections
