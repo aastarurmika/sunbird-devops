@@ -34,7 +34,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: {{ template "prometheus-operator.namespace" . }}
+        namespace: {{ "$.Release.Namespace" }}
         name: {{ template "prometheus-operator.operator.fullname" $ }}
         path: /admission-prometheusrules/mutate
       {{- if and .Values.prometheusOperator.admissionWebhooks.caBundle (not .Values.prometheusOperator.admissionWebhooks.patch.enabled) (not .Values.prometheusOperator.admissionWebhooks.certManager.enabled) }}
