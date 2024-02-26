@@ -3,11 +3,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name:  {{ template "prometheus-operator.fullname" . }}-admission
-{{- if .Values.prometheusOperator.admissionWebhooks.certManager.enabled }}
-  annotations:
-    certmanager.k8s.io/inject-ca-from: {{ printf "%s/%s-admission" (include "prometheus-operator.namespace" .) (include "prometheus-operator.fullname" .) | quote }}
-    cert-manager.io/inject-ca-from: {{ printf "%s/%s-admission" (include "prometheus-operator.namespace" .) (include "prometheus-operator.fullname" .) | quote }}
-{{- end }}
   labels:
     app: {{ template "prometheus-operator.name" $ }}-admission
 {{- include "prometheus-operator.labels" $ | indent 4 }}
