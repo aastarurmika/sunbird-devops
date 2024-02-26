@@ -1,4 +1,4 @@
-{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.admissionWebhooks.enabled }}
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -8,14 +8,10 @@ metadata:
 {{- include "prometheus-operator.labels" $ | indent 4 }}
 webhooks:
   - name: prometheusrulemutate.monitoring.coreos.com
-    {{- if eq .Values.prometheusOperator.admissionWebhooks.failurePolicy "IgnoreOnInstallOnly" }}
-    failurePolicy: {{ .Release.IsInstall | ternary "Ignore" "Fail" }}
-    {{- else if .Values.prometheusOperator.admissionWebhooks.failurePolicy  }}
-    failurePolicy: {{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
-    {{- else if .Values.prometheusOperator.admissionWebhooks.patch.enabled }}
+    {{- if .Values.prometheusOperator.admissionWebhooks.patch.enabled  }}
     failurePolicy: Ignore
     {{- else }}
-    failurePolicy: Fail
+    failurePolicy: {{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
     {{- end }}
     rules:
       - apiGroups:
@@ -29,34 +25,11 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: {{ "$.Release.Namespace" }}
+        namespace: {{ $.Release.Namespace }}
         name: {{ template "prometheus-operator.operator.fullname" $ }}
         path: /admission-prometheusrules/validate
-      
-    timeoutSeconds: {{ .Values.prometheusOperator.admissionWebhooks.timeoutSeconds }}
-    admissionReviewVersions: ["v1", "v1beta1"]
+    timeoutSeconds: {{ .Values.prometheusOperator.admissionWebhooks.timeoutSeconds }}      
+    admissionReviewVersions: ["v1beta1", "v1"]    
     sideEffects: None
-    {{- if or .Values.prometheusOperator.denyNamespaces .Values.prometheusOperator.namespaces }}
-    namespaceSelector:
-      matchExpressions:
-      {{- if .Values.prometheusOperator.denyNamespaces }}
-      - key: kubernetes.io/metadata.name
-        operator: NotIn
-        values:
-        {{- range $namespace := mustUniq .Values.prometheusOperator.denyNamespaces }} 
-        - {{ $namespace }}
-        {{- end }}
-      {{- else if and .Values.prometheusOperator.namespaces .Values.prometheusOperator.namespaces.additional }}
-      - key: kubernetes.io/metadata.name
-        operator: In
-        values:
-        {{- if and .Values.prometheusOperator.namespaces.releaseNamespace (default .Values.prometheusOperator.namespaces.releaseNamespace true) }}
-        {{- $namespace := printf "%s" (include "prometheus-operator.namespace" .) }}
-        - {{ $namespace }}
-        {{- end }}
-        {{- range $namespace := mustUniq .Values.prometheusOperator.namespaces.additional }} 
-        - {{ $namespace }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
+
 {{- end }}
