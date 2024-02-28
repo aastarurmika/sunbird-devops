@@ -782,7 +782,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "prom-fed",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -827,7 +827,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "prom-fed",
           "expr": "sum(rate(nginx_http_requests_total[2m]))",
           "format": "time_series",
           "hide": false,
@@ -838,7 +838,7 @@
           "step": 2
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "prom-fed",
           "expr": "sum(rate(nginx_http_requests_total[5m] offset 1d))  ",
           "format": "time_series",
           "interval": "",
@@ -848,7 +848,7 @@
           "step": 2
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "prom-fed",
           "expr": "sum(rate(nginx_http_requests_total[5m] offset 1w))  ",
           "format": "time_series",
           "interval": "",
@@ -2135,7 +2135,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Flink-Prometheus",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2255,7 +2255,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(245, 54, 54, 0.9)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "Flink-Prometheus",
       "fieldConfig": {
         "defaults": {
           "custom": {}
