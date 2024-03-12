@@ -3931,7 +3931,33 @@ proxyconfig: |-
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://pulz-web-service:5000;
     }
+    location /pulse/ {
+      # Simple requests
+    if ($request_method ~* "(GET|POST|PUT)") {
+      add_header "Access-Control-Allow-Origin"  *;
+    }
 
+    # Preflighted requests
+    if ($request_method = OPTIONS ) {
+      add_header "Access-Control-Allow-Origin"  *;
+      add_header "Access-Control-Allow-Methods" "GET, POST, OPTIONS, HEAD";
+      add_header "Access-Control-Allow-Headers" "Authorization, Origin, X-Requested-With, Content-Type, Accept";
+      return 200;
+    }
+     # add_header Access-Control-Allow-Origin "*";
+      #add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+      proxy_cookie_path ~*^/.* /;
+      proxy_set_header X-Real-IP  $remote_addr;
+      proxy_set_header X-Forwarded-For $remote_addr;
+      proxy_set_header Host $host;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Server $host;
+      rewrite ^/pulse/(.*) /$1 break;
+      proxy_pass http://form-service:8099;
+      proxy_connect_timeout 10;
+      proxy_send_timeout 300;
+      proxy_read_timeout 300;
+    }
     {# Including custom configuration #}
     {{ proxy_custom_config }}
 
