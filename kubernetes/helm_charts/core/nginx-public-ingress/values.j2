@@ -384,6 +384,12 @@ proxyconfig: |-
              
               return 200;
       }
+      if ($request_method = 'GET') {
+              add_header 'Access-Control-Allow-Origin' '*';
+      }
+      if ($request_method = 'POST') {
+              add_header 'Access-Control-Allow-Origin' '*';
+      }
       add_header Access-Control-Allow-Origin "*";
       add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
       proxy_cookie_path ~*^/.* /;
