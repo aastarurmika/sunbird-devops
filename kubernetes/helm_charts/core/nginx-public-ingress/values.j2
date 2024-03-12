@@ -379,7 +379,7 @@ proxyconfig: |-
       if ($request_method = OPTIONS ) {
               add_header Access-Control-Allow-Origin "*" ;
               add_header Access-Control-Allow-Methods "GET, OPTIONS, PATCH, POST";
-              add_header Access-Control_allow_headers "X-Requested-With, Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers, locale, rootOrg, hostPath, org, Referer, sec-ch-ua-mobile, sec-ch-ua, User-Agent, wid"
+              add_header Access-Control_allow_headers "X-Requested-With, Content-Type, Authorization, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers, locale, rootOrg, hostPath, org, Referer, sec-ch-ua-mobile, sec-ch-ua, User-Agent, wid";
               add_header Content-Length 0;
              
               return 200;
