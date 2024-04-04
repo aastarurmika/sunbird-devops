@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:v1.4.1"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             {{- if .Values.kafkaExporter}}
