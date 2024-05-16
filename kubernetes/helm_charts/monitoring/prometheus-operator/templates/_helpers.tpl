@@ -109,7 +109,7 @@ heritage: {{ $.Release.Service | quote }}
 {{- end -}}
 {{- end -}}
 
-{{/* Create the name of thanosRuler service account to use */}}
+/* Create the name of thanosRuler service account to use */
 {{- define "kube-prometheus-stack.thanosRuler.serviceAccountName" -}}
 {{- if .Values.thanosRuler.serviceAccount.create -}}
     {{ default (include "kube-prometheus-stack.thanosRuler.name" .) .Values.thanosRuler.serviceAccount.name }}
