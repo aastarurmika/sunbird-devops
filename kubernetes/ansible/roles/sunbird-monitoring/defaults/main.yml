@@ -7,13 +7,13 @@ monitoring_stack:
   - elasticsearch-exporter
   - logger
   - blackbox-exporter
-  - additional-scrape-configs
+ # - additional-scrape-configs
   - alertrules
   - kafka-topic-exporter
   - prometheus-redis-exporter
   - processing-kafka-exporter
   - json-path-exporter
-  - oauth2-proxy
+  #- oauth2-proxy
 
 # Variable to add additional charts in monitoring.
 # eg:
