@@ -136,6 +136,7 @@ premium_consumer_rate_limits:
 kong_apis:
   - name: BlockPrivateContentAPIs
     uris: '{{ private_content_prefix }}/*'
+    upstream_url: "http://dummy-url-to-block.com"
     strip_uri: false
     plugins:
       - name: ip-restriction
