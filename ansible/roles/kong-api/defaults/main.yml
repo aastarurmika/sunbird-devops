@@ -164,10 +164,11 @@ kong_apis:
     upstream_url: "http://dummy-url-to-block.com"
     strip_uri: false
     plugins:
-      - name: ip-restriction
+      - name: request-termination
         config:
-          deny:
-            - 0.0.0.0/0
+          status_code: 403
+          message: "Access to this API is blocked"
+
 
   - name: menteeConsolidatedObservationAttemptsV2
     uris: "{{ observation_mw_service_prefix }}/v1/observation/menteeConsolidatedObservationAttemptsV2"
