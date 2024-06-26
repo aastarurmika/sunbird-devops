@@ -80,11 +80,6 @@ scrapeconfig:
       - target_label: __address__
         replacement: redis-exporter:9121
 
-  - job_name: 'graylog'
-    static_configs:
-      - targets: ["{{ groups['graylog'] | difference(["localhost"]) | map('regex_replace', '^(.*)$', '\\1:9833') | list | join("\", \"") }}"]
-
- 
 
 namespace: "{{ namespace }}"
 services:
