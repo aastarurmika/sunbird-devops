@@ -13,6 +13,7 @@ monitoring_stack:
   - prometheus-redis-exporter
   - processing-kafka-exporter
   - json-path-exporter
+  - ingestion-kafka-exporter
   #- oauth2-proxy
 
 # Variable to add additional charts in monitoring.
