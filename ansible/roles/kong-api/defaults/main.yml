@@ -158,18 +158,6 @@ premium_consumer_rate_limits:
     config.policy: local
 
 kong_apis:
-
-  - name: BlockPrivateContentAPIs
-    uris: '{{ private_content_prefix }}/*'
-    upstream_url: "http://dummy-url-to-block.com"
-    strip_uri: false
-    plugins:
-      - name: request-termination
-        config:
-          status_code: 403
-          message: "Access to this API is blocked"
-
-
   - name: menteeConsolidatedObservationAttemptsV2
     uris: "{{ observation_mw_service_prefix }}/v1/observation/menteeConsolidatedObservationAttemptsV2"
     upstream_url: "{{ observation_mw_url }}/v1/observation/menteeConsolidatedObservationAttemptsV2"
