@@ -395,7 +395,7 @@ grafana.ini:
     from_name: Grafana
     
   paths:
-    data: /var/lib/grafana/data
+    data: /var/lib/data
     logs: /var/log/grafana
     plugins: /var/lib/grafana/plugins
     provisioning: /etc/grafana/provisioning
