@@ -4728,7 +4728,7 @@ nginxconfig: |
           default 0;
           ~^/login$ 1;
           ~^/create$ 1;
-          ~^/public/toc/overview(/.*)?$ 1;
+          
       }
       map $http_user_agent $prerender_agent {
           default 0;
@@ -4750,14 +4750,9 @@ nginxconfig: |
           ~*vkShare 1;
           ~*W3C_Validator 1;
       }
-      set $prerender 0;
-
-
-# Conditionally set to 1 only if both match
-      if ($prerender_path = 1) {
-          if ($prerender_agent = 1) {
-            set $prerender 1;
-          }
+      map $request_uri $prerender_path {
+          default 0;
+          "1:1"    1;
       }
 
       include       /etc/nginx/mime.types;
