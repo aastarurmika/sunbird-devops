@@ -4749,7 +4749,7 @@ nginxconfig: |
           ~*W3C_Validator 1;
       }
       
-      map $request_uri $prerender_path {
+      map "$prerender_path:$prerender_agent" $prerender {
           default 0;
           "1:1"    1;
       }
