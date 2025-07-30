@@ -4752,12 +4752,14 @@ nginxconfig: |
       }
       set $prerender 0;
 
+
 # Conditionally set to 1 only if both match
       if ($prerender_path = 1) {
-         if ($prerender_agent = 1) {
-          set $prerender 1;
-         }
+          if ($prerender_agent = 1) {
+            set $prerender 1;
+          }
       }
+
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
       resolver {{ kube_dns_ip }} valid=30s;
