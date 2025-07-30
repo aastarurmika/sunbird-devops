@@ -4772,7 +4772,12 @@ nginxconfig: |
           default 0;
           "1:1"    1;
       }
-
+      map $request_uri $prerender_path {
+          default 0;
+          ~^/app/create-account$ 1;
+          ~^/public/.*$ 1;
+          ~^/sitemap\.xml$ 1;
+    }
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
       resolver {{ kube_dns_ip }} valid=30s;
