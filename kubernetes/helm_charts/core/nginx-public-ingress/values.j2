@@ -4750,9 +4750,13 @@ nginxconfig: |
           ~*vkShare 1;
           ~*W3C_Validator 1;
       }
-      map "$prerender_path:$prerender_agent" $prerender {
-          default 0;
-          "1:1" 1;
+      set $prerender 0;
+
+# Conditionally set to 1 only if both match
+      if ($prerender_path = 1) {
+         if ($prerender_agent = 1) {
+          set $prerender 1;
+         }
       }
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
