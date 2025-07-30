@@ -995,23 +995,61 @@ proxyconfig: |-
       proxy_pass http://ui-static;
     }
     location / {
-              add_header Access-Control-Allow-Origin "*" ;
-              add_header Access-Control-Allow-Methods "GET, OPTIONS, PATCH, POST";
-              add_header Access-Control-Allow-Headers "Access-Control-Allow-Origin, Authorization, Content-Type, user-id, Content-Encoding, rootorg, org, wid, hostpath";
 
-              
-      rewrite ^/(.*) /$1 break;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP {{ nginx_client_public_ip_header | d('$remote_addr') }};
-      proxy_set_header X-Scheme $scheme;
-      proxy_connect_timeout 5;
-      proxy_send_timeout 60;
-      proxy_read_timeout 70;
-      proxy_set_header    X-Forwarded-Proto $scheme;
-      proxy_set_header Connection "";
-      proxy_http_version 1.1;
-      proxy_set_header X-Request-ID $sb_request_id;
-      proxy_pass http://ui-static;
+        # Rewrite to prerenderio only if path AND bot match
+
+        if ($prerender = 1) {
+
+            rewrite (.*) /prerenderio last;
+
+        }
+ 
+        proxy_set_header Host $SERVER_NAME;
+
+        proxy_set_header Connection "";
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ 
+        proxy_hide_header Cache-Control;
+
+        add_header Cache-Control "public,max-age=31536000";
+ 
+        resolver 8.8.8.8 8.8.4.4;
+
+        set $backend "127.0.0.1:3000";
+ 
+        rewrite .* $uri break;
+
+        proxy_pass http://ui-static;
+
+    }
+ 
+    location /prerenderio {
+
+        if ($prerender = 0) {
+
+            return 404;
+
+        }
+ 
+        proxy_set_header X-Prerender-Token {{prerender_token}};
+
+        proxy_set_header X-Prerender-Int-Type Nginx_Rev_Proxy;
+ 
+        proxy_hide_header Cache-Control;
+
+        add_header Cache-Control "private,max-age=600,must-revalidate";
+ 
+        resolver 8.8.8.8 8.8.4.4;
+
+        set $prerender_host "service.prerender.io";
+ 
+        # Rewrite internal request into full URL expected by Prerender.io
+
+        rewrite .* /$scheme://$host$request_uri? break;
+ 
+        proxy_pass https://$prerender_host;
+
     }
     location /v3/device/register {
       proxy_set_header X-Request-ID $sb_request_id;
@@ -5927,6 +5965,42 @@ nginxconfig: |
       worker_connections  10000;
   }
   http {
+      map $request_uri $prerender_path {
+          default 0;
+          ~^/login$ 1;
+          ~^/create$ 1;
+          
+      }
+      map $http_user_agent $prerender_agent {
+          default 0;
+          ~*googlebot 1;
+          ~*bingbot 1;
+          ~*yahoo 1;
+          ~*baiduspider 1;
+          ~*facebookexternalhit 1;
+          ~*twitterbot 1;
+          ~*rogerbot 1;
+          ~*linkedinbot 1;
+          ~*embedly 1;
+          ~*showyoubot 1;
+          ~*outbrain 1;
+          ~*pinterest/0. 1;
+          ~*developers.google.com/+/web/snippet 1;
+          ~*slackbot 1;
+          ~*vkShare 1;
+          ~*W3C_Validator 1;
+      }
+      
+      map "$prerender_path:$prerender_agent" $prerender {
+          default 0;
+          "1:1"    1;
+      }
+      map $request_uri $prerender_path {
+          default 0;
+          ~^/app/create-account$ 1;
+          ~^/public/.*$ 1;
+          ~^/sitemap\.xml$ 1;
+      }
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
       resolver {{ kube_dns_ip }} valid=30s;
