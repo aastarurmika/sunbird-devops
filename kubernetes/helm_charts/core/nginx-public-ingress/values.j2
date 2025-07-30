@@ -4725,34 +4725,34 @@ nginxconfig: |
   }
   http {
       map $request_uri $prerender_path {
-        default 0;
-        ~^/login$ 1;
-        ~^/create$ 1;
-        ~^/public/toc/overview(/.*)?$ 1;
+          default 0;
+          ~^/login$ 1;
+          ~^/create$ 1;
+          ~^/public/toc/overview(/.*)?$ 1;
       }
       map $http_user_agent $prerender_agent {
-        default 0;
-        ~*googlebot 1;
-        ~*bingbot 1;
-        ~*yahoo 1;
-        ~*baiduspider 1;
-        ~*facebookexternalhit 1;
-        ~*twitterbot 1;
-        ~*rogerbot 1;
-        ~*linkedinbot 1;
-        ~*embedly 1;
-        ~*quora link preview 1;
-        ~*showyoubot 1;
-        ~*outbrain 1;
-        ~*pinterest/0. 1;
-        ~*developers.google.com/+/web/snippet 1;
-        ~*slackbot 1;
-        ~*vkShare 1;
-        ~*W3C_Validator 1;
+          default 0;
+          ~*googlebot 1;
+          ~*bingbot 1;
+          ~*yahoo 1;
+          ~*baiduspider 1;
+          ~*facebookexternalhit 1;
+          ~*twitterbot 1;
+          ~*rogerbot 1;
+          ~*linkedinbot 1;
+          ~*embedly 1;
+          ~*quora link preview 1;
+          ~*showyoubot 1;
+          ~*outbrain 1;
+          ~*pinterest/0. 1;
+          ~*developers.google.com/+/web/snippet 1;
+          ~*slackbot 1;
+          ~*vkShare 1;
+          ~*W3C_Validator 1;
       }
       map "$prerender_path:$prerender_agent" $prerender {
-        default 0;
-        "1:1" 1;
+          default 0;
+          "1:1" 1;
       }
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
