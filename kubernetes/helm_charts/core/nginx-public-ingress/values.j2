@@ -4749,6 +4749,8 @@ nginxconfig: |
           ~*vkShare 1;
           ~*W3C_Validator 1;
       }
+      # Initialize prerender to 0
+      set $prerender 0;
       map $request_uri $prerender_path {
           default 0;
           "1:1"    1;
