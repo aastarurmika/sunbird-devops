@@ -134,7 +134,7 @@ nodebb_url: "http://nodebb-service:4567/discussions"
 analytics_url: "http://pm-analytics-service:8091"
 observation_mw_url: "http://observation-mw:3009"
 forms_service_url: "http://form-service:8099"
-playlist_service_url: "http://playlist-service:3001"
+playlist_service_url: "http://playlist-service:3003"
 
 ###ml-service#####
 ml_reports_service_url: "http://ml-reports-service:3000"
