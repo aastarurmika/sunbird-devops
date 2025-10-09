@@ -103,6 +103,7 @@ notification_service_prefix: /notification
 registry_service_prefix: /rc
 observation_mw_service_prefix: /observationmw
 forms_service_prefix: /forms
+playlist_service_prefix: /playlist
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
@@ -133,6 +134,7 @@ nodebb_url: "http://nodebb-service:4567/discussions"
 analytics_url: "http://pm-analytics-service:8091"
 observation_mw_url: "http://observation-mw:3009"
 forms_service_url: "http://form-service:8099"
+playlist_service_url: "http://playlist-service:3001"
 
 ###ml-service#####
 ml_reports_service_url: "http://ml-reports-service:3000"
@@ -8512,3 +8514,77 @@ kong_apis:
       config.limit_by: credential
     - name: request-size-limiting
       config.allowed_payload_size: "{{ small_request_size_limit }}"
+      
+  - name: createPlaylist
+    uris: "{{ playlist_service_prefix}}/v1/create"
+    upstream_url: "{{ playlist_service_url}}/v1/playlist/create"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - 'contentCreate'
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: searchPlaylist
+    uris: "{{ playlist_service_prefix}}/v1/search"
+    upstream_url: "{{ playlist_service_url}}/v1/playlist/search"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+          - "contentTempAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: updatePlaylist
+    uris: "{{ playlist_service_prefix}}/v1/update"
+    upstream_url: "{{ playlist_service_url}}/v1/playlist/update"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: deletePlaylist
+    uris: "{{ playlist_service_prefix}}/v1/delete"
+    upstream_url: "{{ playlist_service_url}}/v1/playlist/delete"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
