@@ -3938,7 +3938,7 @@ kong_apis:
       - "{{ statsd_pulgin }}"
       - name: rate-limiting
         config.policy: local
-        config.hour: "{{ large_rate_limit_per_hour }}"
+        config.hour: "{{ x_large_rate_limit_per_hour }}"
         config.limit_by: ip
       - name: request-size-limiting
         config.allowed_payload_size: "{{ small_request_size_limit }}"
