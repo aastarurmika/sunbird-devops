@@ -409,6 +409,8 @@ proxyconfig: |-
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://kong;
       client_max_body_size 1G;
+      proxy_request_buffering off;
+      proxy_buffering off;
     }
     location /apis/ {
       if ($request_method = OPTIONS ) {
@@ -436,6 +438,8 @@ proxyconfig: |-
       proxy_read_timeout 300;
       # --- Upload Fix ---
       client_max_body_size 1G;
+      proxy_request_buffering off;
+      proxy_buffering off;
     }
     location /apis/public/v8/mobileApp/discussion/ {
       if ($request_method = OPTIONS ) {
