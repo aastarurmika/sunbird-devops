@@ -402,15 +402,13 @@ proxyconfig: |-
       proxy_set_header X-Real-IP {{ nginx_client_public_ip_header | d('$remote_addr') }};
       proxy_set_header X-Scheme $scheme;
       proxy_set_header    X-Forwarded-For   {{ nginx_client_public_ip_header | d('$remote_addr') }};
-      proxy_connect_timeout 10;
-      proxy_send_timeout 300;
-      proxy_read_timeout 300;
+      proxy_connect_timeout 5;
+      proxy_send_timeout 60;
+      proxy_read_timeout 70;
       proxy_http_version 1.1;
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://kong;
-      client_max_body_size 1G;
-      proxy_request_buffering off;
-      proxy_buffering off;
+      client_max_body_size 400M;
     }
     location /apis/ {
       if ($request_method = OPTIONS ) {
@@ -436,10 +434,6 @@ proxyconfig: |-
       proxy_connect_timeout 10;
       proxy_send_timeout 300;
       proxy_read_timeout 300;
-      # --- Upload Fix ---
-      client_max_body_size 1G;
-      proxy_request_buffering off;
-      proxy_buffering off;
     }
     location /apis/public/v8/mobileApp/discussion/ {
       if ($request_method = OPTIONS ) {
@@ -4107,14 +4101,11 @@ proxyconfig: |-
       proxy_set_header X-Scheme $scheme;
       proxy_set_header    X-Forwarded-For   {{ nginx_client_public_ip_header | d('$remote_addr') }};
       proxy_connect_timeout 5;
-      proxy_send_timeout 300;
-      proxy_read_timeout 300;
+      proxy_send_timeout 60;
+      proxy_read_timeout 70;
       proxy_http_version 1.1;
       proxy_set_header X-Request-ID $sb_request_id;
       proxy_pass http://kong;
-      proxy_request_buffering off;
-      proxy_buffering off;
-      client_max_body_size 1G;
     }
     location /apis/ {
       if ($request_method = OPTIONS ) {
@@ -4138,9 +4129,6 @@ proxyconfig: |-
       proxy_connect_timeout 10;
       proxy_send_timeout 300;
       proxy_read_timeout 300;
-      proxy_request_buffering off;
-      proxy_buffering off;
-      client_max_body_size 1G;
     }
     location /protected/v8/resource/ {
       if ($request_method = OPTIONS ) {
