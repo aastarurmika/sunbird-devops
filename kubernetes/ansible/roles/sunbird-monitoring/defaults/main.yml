@@ -4,15 +4,15 @@ fullnameOverride: sunbird-monitoring
 monitoring_stack:
   - prometheus-operator
   - cassandra-jmx-exporter
- # - elasticsearch-exporter
+  - elasticsearch-exporter
   #- logger
-  #- blackbox-exporter
+  - blackbox-exporter
   - additional-scrape-configs
   - alertrules
- # - kafka-topic-exporter
-  #- prometheus-redis-exporter
-  #- processing-kafka-exporter
-  #- json-path-exporter
+  - kafka-topic-exporter
+  - prometheus-redis-exporter
+  - processing-kafka-exporter
+  - json-path-exporter
   - ingestion-kafka-exporter
   #- oauth2-proxy
 
