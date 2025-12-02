@@ -3,7 +3,7 @@
 fullnameOverride: sunbird-monitoring
 monitoring_stack:
   - prometheus-operator
- # - cassandra-jmx-exporter
+  - cassandra-jmx-exporter
  # - elasticsearch-exporter
   #- logger
   #- blackbox-exporter
