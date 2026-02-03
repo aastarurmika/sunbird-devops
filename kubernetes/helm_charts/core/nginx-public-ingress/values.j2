@@ -54,7 +54,7 @@ dockerhub: {{ dockerhub }}
 
 resources:
   requests:
-    cpu: {{proxy_cpu_req|default('100m')}}
+    cpu: {{proxy_cpu_req|default('200m')}}
     memory: {{proxy_mem_req|default('100Mi')}}
   limits:
     cpu: {{proxy_cpu_limit|default('1')}}
