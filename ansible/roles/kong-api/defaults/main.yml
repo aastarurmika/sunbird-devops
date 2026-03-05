@@ -8589,7 +8589,23 @@ kong_apis:
         config.limit_by: credential
       - name: request-size-limiting
         config.allowed_payload_size: "{{ small_request_size_limit }}"
-        
+  - name: deleteEntity
+    uris: "{{ entity_service_prefix }}/v1/delete"
+    upstream_url: "{{ entity_service_url }}/v1/entity/delete"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"      
   - name: createEntity
     uris: "{{ entity_service_prefix }}/v1/create"
     upstream_url: "{{ entity_service_url }}/v1/entity/create"
