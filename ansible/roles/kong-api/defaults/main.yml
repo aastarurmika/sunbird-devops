@@ -89,6 +89,7 @@ player_prefix: /player
 observation_mw_service_prefix: /observationmw
 forms_service_prefix: /forms
 playlist_service_prefix: /playlist
+entity_service_prefix: /entity
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
@@ -7825,4 +7826,129 @@ kong_apis:
         config.limit_by: credential
       - name: request-size-limiting
         config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: deleteEntity
+    uris: "{{ entity_service_prefix }}/v1/delete"
+    upstream_url: "{{ entity_service_url }}/v1/entity/delete"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"      
+  - name: createEntity
+    uris: "{{ entity_service_prefix }}/v1/create"
+    upstream_url: "{{ entity_service_url }}/v1/entity/create"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+ 
+  - name: updateEntity
+    uris: "{{ entity_service_prefix }}/v1/update"
+    upstream_url: "{{ entity_service_url }}/v1/entity/update"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+ 
+  - name: getEntityHierarchy
+    uris: "{{ entity_service_prefix }}/v1/hierarchy"
+    upstream_url: "{{ entity_service_url }}/v1/entity/hierarchy"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+ 
+  - name: searchEntity
+    uris: "{{ entity_service_prefix }}/v1/search"
+    upstream_url: "{{ entity_service_url }}/v1/entity/search"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+ 
+  - name: uploadEntity
+    uris: "{{ entity_service_prefix }}/v1/upload"
+    upstream_url: "{{ entity_service_url }}/v1/entity/upload"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ large_request_size_limit }}"
+ 
+  - name: mapEntity
+    uris: "{{ entity_service_prefix }}/v1/mapping"
+    upstream_url: "{{ entity_service_url }}/v1/entity/mapping"
+    strip_uri: true
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
