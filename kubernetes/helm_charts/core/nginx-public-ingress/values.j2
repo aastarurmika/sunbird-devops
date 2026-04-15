@@ -3847,15 +3847,13 @@ proxyconfig: |-
       proxy_pass http://{{ai_endpoint}};
     }
     location /api/ {
-        proxy_pass http://{{ai_backend_endpoint}}/;   # <-- backend service
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        
-        # Fix CORS/POST issues
-        proxy_http_version 1.1;
-        proxy_set_header Connection "";
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      rewrite ^/api/(.*)$ /$1 break;
+      proxy_pass http://{{ai_backend}};
     }
-
     {# Including custom configuration #}
     {{ proxy_custom_config }}
 
