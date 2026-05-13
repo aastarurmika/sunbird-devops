@@ -15,6 +15,13 @@ scrapeconfig:
   #   prometheus.io/port: "2020"
   #   prometheus.io/path: /api/v1/metrics/prometheus
   #
+
+  - job_name: 'kubernetes-nodes'
+    kubernetes_sd_configs:
+    - role: node
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
   - job_name: 'kubernetes-pods'
     kubernetes_sd_configs:
     - role: pod
