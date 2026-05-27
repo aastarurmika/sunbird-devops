@@ -1993,12 +1993,12 @@ proxyconfig: |-
     }
 
    server {
-    if ($host = cbp-aastrika-stage.tarento.com) {
+    if ($host = cbp-staging.aastrika.org) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  cbp-aastrika-stage.tarento.com;
+      server_name  cbp-staging.aastrika.org;
       return 404;
     }
    server {
@@ -2007,7 +2007,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.cbp-aastrika-stage.tarento.com cbp-aastrika-stage.tarento.com;
+    server_name *.cbp-staging.aastrika.org cbp-staging.aastrika.org;
     {#
     custom nginx server config section
     eg:
@@ -2885,12 +2885,12 @@ proxyconfig: |-
 
 
    server {
-    if ($host = admin-aastrika-stage.tarento.com) {
+    if ($host = admin-staging.aastrika.org) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  admin-aastrika-stage.tarento.com;
+      server_name  admin-staging.aastrika.org;
       return 404;
     }
    server {
@@ -2899,7 +2899,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.admin-aastrika-stage.tarento.com admin-aastrika-stage.tarento.com;
+    server_name *.admin-staging.aastrika.org admin-staging.aastrika.org;
     {#
     custom nginx server config section
     eg:
@@ -3776,12 +3776,12 @@ proxyconfig: |-
 
 
   server {
-    if ($host = org-aastrika-stage.tarento.com) {
+    if ($host = org-staging.aastrika.org) {
         return 301 https://$host$request_uri;
         }
 
       listen       80;
-      server_name  org-aastrika-stage.tarento.com;
+      server_name  org-staging.aastrika.org;
       return 404;
     }
     
@@ -3791,7 +3791,7 @@ proxyconfig: |-
     ssl_certificate_key   /etc/secrets/site.key;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA HIGH !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
-    server_name *.org-aastrika-stage.tarento.com org-aastrika-stage.tarento.com;
+    server_name *.org-staging.aastrika.org org-staging.aastrika.org;
     {#
     custom nginx server config section
     eg:
