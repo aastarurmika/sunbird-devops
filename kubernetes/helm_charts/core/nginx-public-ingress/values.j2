@@ -3773,6 +3773,15 @@ proxyconfig: |-
     client_max_body_size 400M;
 
     }
+    server {
+    if ($host = sonar.aastrika.org) {
+        return 301 https://$host$request_uri;
+        }
+
+      listen       80;
+      server_name  sonar.aastrika.org;
+      return 404;
+    }
 
     server {
     listen                443 ssl;
