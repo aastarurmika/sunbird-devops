@@ -122,6 +122,8 @@ observation_mw_url: "http://observation-mw:3009"
 forms_service_url: "http://form-service:8099"
 playlist_service_url: "http://playlist-service:3003"
 entity_service_url: "http://frac-etl-service:8083"
+vm_ai_service_url: "http://{{rag_vm_ip}}:8080/learning-service"
+
 
 premium_consumer_rate_limits:
   - api: createContent
