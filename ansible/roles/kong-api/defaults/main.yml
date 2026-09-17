@@ -90,6 +90,7 @@ observation_mw_service_prefix: /observationmw
 forms_service_prefix: /forms
 playlist_service_prefix: /playlist
 entity_service_prefix: /entity
+ai_service_prefix: /ai-studio
 
 # Service URLs
 knowledge_mw_service_url: "http://knowledge-mw-service:5000"
@@ -122,8 +123,7 @@ observation_mw_url: "http://observation-mw:3009"
 forms_service_url: "http://form-service:8099"
 playlist_service_url: "http://playlist-service:3003"
 entity_service_url: "http://frac-etl-service:8083"
-vm_ai_service_url: "http://{{rag_vm_ip}}:8080/learning-service"
-
+ai_service_url: "http://{{rag_vm_ip}}:4800"
 
 premium_consumer_rate_limits:
   - api: createContent
@@ -7955,3 +7955,397 @@ kong_apis:
       - name: request-size-limiting
         config.allowed_payload_size: "{{ medium_request_size_limit }}"
 
+  # Aastrika AI Service - AI Studio (turns a document into a narrated video)
+
+  - name: aiStudioUpload
+    uris: "{{ ai_service_prefix }}/v1/studio/upload"
+    upstream_url: "{{ ai_service_url }}/v1/studio/upload"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ x_large_request_size_limit }}"
+
+  - name: aiStudioGeneratePlan
+    uris: "{{ ai_service_prefix }}/v1/studio/generate-plan"
+    upstream_url: "{{ ai_service_url }}/v1/studio/generate-plan"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: aiStudioRevisePlan
+    uris: "{{ ai_service_prefix }}/v1/studio/revise-plan"
+    upstream_url: "{{ ai_service_url }}/v1/studio/revise-plan"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  # The only route that spends provider credit, so it gets the lowest rate limit.
+  - name: aiStudioGenerateVideo
+    uris: "{{ ai_service_prefix }}/v1/studio/generate-video"
+    upstream_url: "{{ ai_service_url }}/v1/studio/generate-video"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ small_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  # Polled every few seconds while a render runs, so it gets a high rate limit.
+  - name: aiStudioGetVideo
+    uris: "{{ ai_service_prefix }}/v1/studio/get-video"
+    upstream_url: "{{ ai_service_url }}/v1/studio/get-video"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ x_large_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiStudioListVideos
+    uris: "{{ ai_service_prefix }}/v1/studio/list-videos"
+    upstream_url: "{{ ai_service_url }}/v1/studio/list-videos"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiStudioDownloadVideo
+    uris: "{{ ai_service_prefix }}/v1/studio/download-video"
+    upstream_url: "{{ ai_service_url }}/v1/studio/download-video"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiStudioDeleteVideo
+    uris: "{{ ai_service_prefix }}/v1/studio/delete-video"
+    upstream_url: "{{ ai_service_url }}/v1/studio/delete-video"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiStudioListVoices
+    uris: "{{ ai_service_prefix }}/v1/studio/list-voices"
+    upstream_url: "{{ ai_service_url }}/v1/studio/list-voices"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  # Aastrika AI Service - Quiz (turns source material into MCQs)
+
+  - name: aiQuizUpload
+    uris: "{{ ai_service_prefix }}/v1/quiz/upload"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/upload"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ x_large_request_size_limit }}"
+
+  - name: aiQuizGenerate
+    uris: "{{ ai_service_prefix }}/v1/quiz/generate"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/generate"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: aiQuizList
+    uris: "{{ ai_service_prefix }}/v1/quiz/list"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/list"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiQuizUpdate
+    uris: "{{ ai_service_prefix }}/v1/quiz/update"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/update"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentUpdate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ medium_request_size_limit }}"
+
+  - name: aiQuizExport
+    uris: "{{ ai_service_prefix }}/v1/quiz/export"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/export"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiQuizDelete
+    uris: "{{ ai_service_prefix }}/v1/quiz/delete"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/delete"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiQuizLanguages
+    uris: "{{ ai_service_prefix }}/v1/quiz/languages"
+    upstream_url: "{{ ai_service_url }}/v1/quiz/languages"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  # Catch-all for /v1/quiz/<id>. Kong matches the longest path, so the named quiz routes above still win.
+  - name: aiQuizGet
+    uris: "{{ ai_service_prefix }}/v1/quiz"
+    upstream_url: "{{ ai_service_url }}/v1/quiz"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  # Aastrika AI Service - Artifacts (file storage)
+  # Read and delete share one path, so they are split by method to get different acl groups.
+
+  - name: aiArtifactUpload
+    uris: "{{ ai_service_prefix }}/v1/artifacts/upload"
+    upstream_url: "{{ ai_service_url }}/v1/artifacts/upload"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentCreate"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ x_large_request_size_limit }}"
+
+  - name: aiArtifactRead
+    uris: "{{ ai_service_prefix }}/v1/artifacts"
+    methods:
+      - GET
+    upstream_url: "{{ ai_service_url }}/v1/artifacts"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAccess"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ x_large_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  - name: aiArtifactDelete
+    uris: "{{ ai_service_prefix }}/v1/artifacts"
+    methods:
+      - DELETE
+    upstream_url: "{{ ai_service_url }}/v1/artifacts"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
+
+  # Aastrika AI Service - Usage and spend
+  # contentAdmin only: the service does no role check of its own.
+
+  - name: aiUsageReport
+    uris: "{{ ai_service_prefix }}/v1/usage/get-report"
+    upstream_url: "{{ ai_service_url }}/v1/usage/get-report"
+    strip_uri: false
+    plugins:
+      - name: jwt
+      - name: cors
+      - "{{ statsd_pulgin }}"
+      - name: acl
+        config.whitelist:
+          - "contentAdmin"
+      - name: rate-limiting
+        config.policy: local
+        config.hour: "{{ medium_rate_limit_per_hour }}"
+        config.limit_by: credential
+      - name: request-size-limiting
+        config.allowed_payload_size: "{{ small_request_size_limit }}"
