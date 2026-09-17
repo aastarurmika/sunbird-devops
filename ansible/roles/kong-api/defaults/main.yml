@@ -7960,7 +7960,7 @@ kong_apis:
   - name: aiStudioUpload
     uris: "{{ ai_service_prefix }}/v1/studio/upload"
     upstream_url: "{{ ai_service_url }}/v1/studio/upload"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -7978,7 +7978,7 @@ kong_apis:
   - name: aiStudioGeneratePlan
     uris: "{{ ai_service_prefix }}/v1/studio/generate-plan"
     upstream_url: "{{ ai_service_url }}/v1/studio/generate-plan"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -7996,7 +7996,7 @@ kong_apis:
   - name: aiStudioRevisePlan
     uris: "{{ ai_service_prefix }}/v1/studio/revise-plan"
     upstream_url: "{{ ai_service_url }}/v1/studio/revise-plan"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8015,7 +8015,7 @@ kong_apis:
   - name: aiStudioGenerateVideo
     uris: "{{ ai_service_prefix }}/v1/studio/generate-video"
     upstream_url: "{{ ai_service_url }}/v1/studio/generate-video"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8034,7 +8034,7 @@ kong_apis:
   - name: aiStudioGetVideo
     uris: "{{ ai_service_prefix }}/v1/studio/get-video"
     upstream_url: "{{ ai_service_url }}/v1/studio/get-video"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8052,7 +8052,7 @@ kong_apis:
   - name: aiStudioListVideos
     uris: "{{ ai_service_prefix }}/v1/studio/list-videos"
     upstream_url: "{{ ai_service_url }}/v1/studio/list-videos"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8070,7 +8070,7 @@ kong_apis:
   - name: aiStudioDownloadVideo
     uris: "{{ ai_service_prefix }}/v1/studio/download-video"
     upstream_url: "{{ ai_service_url }}/v1/studio/download-video"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8088,7 +8088,7 @@ kong_apis:
   - name: aiStudioDeleteVideo
     uris: "{{ ai_service_prefix }}/v1/studio/delete-video"
     upstream_url: "{{ ai_service_url }}/v1/studio/delete-video"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8106,7 +8106,7 @@ kong_apis:
   - name: aiStudioListVoices
     uris: "{{ ai_service_prefix }}/v1/studio/list-voices"
     upstream_url: "{{ ai_service_url }}/v1/studio/list-voices"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8126,7 +8126,7 @@ kong_apis:
   - name: aiQuizUpload
     uris: "{{ ai_service_prefix }}/v1/quiz/upload"
     upstream_url: "{{ ai_service_url }}/v1/quiz/upload"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8144,7 +8144,7 @@ kong_apis:
   - name: aiQuizGenerate
     uris: "{{ ai_service_prefix }}/v1/quiz/generate"
     upstream_url: "{{ ai_service_url }}/v1/quiz/generate"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8162,7 +8162,7 @@ kong_apis:
   - name: aiQuizList
     uris: "{{ ai_service_prefix }}/v1/quiz/list"
     upstream_url: "{{ ai_service_url }}/v1/quiz/list"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8180,7 +8180,7 @@ kong_apis:
   - name: aiQuizUpdate
     uris: "{{ ai_service_prefix }}/v1/quiz/update"
     upstream_url: "{{ ai_service_url }}/v1/quiz/update"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8198,7 +8198,7 @@ kong_apis:
   - name: aiQuizExport
     uris: "{{ ai_service_prefix }}/v1/quiz/export"
     upstream_url: "{{ ai_service_url }}/v1/quiz/export"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8216,7 +8216,7 @@ kong_apis:
   - name: aiQuizDelete
     uris: "{{ ai_service_prefix }}/v1/quiz/delete"
     upstream_url: "{{ ai_service_url }}/v1/quiz/delete"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8234,7 +8234,7 @@ kong_apis:
   - name: aiQuizLanguages
     uris: "{{ ai_service_prefix }}/v1/quiz/languages"
     upstream_url: "{{ ai_service_url }}/v1/quiz/languages"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8253,7 +8253,7 @@ kong_apis:
   - name: aiQuizGet
     uris: "{{ ai_service_prefix }}/v1/quiz"
     upstream_url: "{{ ai_service_url }}/v1/quiz"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8274,7 +8274,7 @@ kong_apis:
   - name: aiArtifactUpload
     uris: "{{ ai_service_prefix }}/v1/artifacts/upload"
     upstream_url: "{{ ai_service_url }}/v1/artifacts/upload"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8294,7 +8294,7 @@ kong_apis:
     methods:
       - GET
     upstream_url: "{{ ai_service_url }}/v1/artifacts"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8314,7 +8314,7 @@ kong_apis:
     methods:
       - DELETE
     upstream_url: "{{ ai_service_url }}/v1/artifacts"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
@@ -8335,7 +8335,7 @@ kong_apis:
   - name: aiUsageReport
     uris: "{{ ai_service_prefix }}/v1/usage/get-report"
     upstream_url: "{{ ai_service_url }}/v1/usage/get-report"
-    strip_uri: false
+    strip_uri: true
     plugins:
       - name: jwt
       - name: cors
